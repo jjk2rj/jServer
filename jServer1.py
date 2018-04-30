@@ -1,6 +1,7 @@
 import socket
 import sys
 import argparse
+import hashlib
 
 # Parser for arguments
 parser = argparse.ArgumentParser()
@@ -30,20 +31,48 @@ while True:
     # Wait for a connection
     print('waiting for a connection')
     connection, client_address = sock.accept()
+
+    # Receive hashing algorithm from client
+    algo = (connection.recv(1))
+    if algo == '0':
+        algo = 'sha1'
+    if algo == '1':
+        algo = 'sha256'
+    if algo == '2':
+        algo = 'sha512'
+    if algo == '3':
+        algo = 'md5'
+    print("Hashing algorithm: " + algo)
+    hasher = hashlib.new(algo)
+
+    received = 'received_from_client.txt'
+    
     try:
-        print('connection from', client_address)
-
-        # Receive the data in 4096 byte chunks and retransmit it
+        print('connection from', client_address)    
         while True:
-            data = connection.recv(4096)
-            print('received {!r}'.format(data))
-            # if data:
-            #     print('sending data back to the client')
-            #     connection.sendall(data)
-            # else:
-            #     print('no data from', client_address)
-            #     break
+            
+            # Receive the data in 4096 byte chunks and retransmit it
+            with open(received, 'wb') as fw:
+                
+                data = connection.recv(4096)
+                
+                # begin ---------
+                if data:
+                    print('received {!r}'.format(data))
+                    fw.write(data)
+                else:
+                    break
+            fw.close()
+            print("Received!")
+                    
+            with open('received_from_client.txt', 'rb') as afile:
+                buf = afile.read()
+                hasher.update(buf)
+            connection.send(hasher.hexdigest())
+            
+            # file_to_write.close()
 
+            
     finally:
         # Clean up the connection
-        connection.close()
+        connection.close()        

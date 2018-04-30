@@ -28,6 +28,7 @@ parser.add_argument(
     help='the name of the hash algorithm to use',
     )
 
+
 # Parse files names
 # At least one file name is required
 parser.add_argument(
@@ -36,7 +37,17 @@ parser.add_argument(
     help='the input data to hash',
     )
 
+algo = '7'
 args = parser.parse_args()
+if args.hash_name == 'sha1':
+    algo = '0'
+if args.hash_name == 'sha256':
+    algo = '1'
+if args.hash_name == 'sha512':
+    algo = '2'
+if args.hash_name == 'md5':
+    algo = '3'
+
 
 # Create a TCP/IP socket
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -50,27 +61,28 @@ sock.connect(server_address)
 __location__ = os.path.realpath(
     os.path.join(os.getcwd(), os.path.dirname(__file__)))
 
+
+# Send hashing algorithm to server
+# print(args.hash_name)
+# Hashing algorithm obtained from user 
+hashed = hashlib.new(args.hash_name)
+sock.send(algo)
+
 # Send the data in each file
 # Hash the contents of each file
 for file in args.file_names:
+    
+    
+    # open file and send data
+    with open(os.path.join(__location__, file), 'rb') as f:
 
-    # Hashing algorithm obtained from user 
-    hashed = hashlib.new(args.hash_name)
-    f = open(os.path.join(__location__, file), 'r')
-    # contents = f.read().encode('utf-8')
-    message = f.read().encode('utf-8')
+        data = f.read(4096)
+    
+        # print('Sending data', data)
+        sock.send(data)
 
-    # print hash of contents of file name of each file 
-    hashed.update(message)
-    # hashed_data = hashed.hexdigest()
-    print(hashed.hexdigest() + " " + file)
+    # print("waiting for hash of file")
+    data = sock.recv(4096)
+    print(data + " " + file)
 
-    # Send data
-    sock.sendall(message)
-
-    amount_received = 0
-    amount_expected = len(message)
-
-    while amount_received < amount_expected:
-        data = sock.recv(4096)  
-        amount_received += len(data)
+sock.close()
