@@ -4,6 +4,7 @@ import argparse
 import hashlib
 import sys
 import os
+import io
 # from ipaddress import ip_address
 
 parser = argparse.ArgumentParser()
@@ -37,7 +38,7 @@ parser.add_argument(
     help='the input data to hash',
     )
 
-algo = '7'
+algo = ''
 args = parser.parse_args()
 if args.hash_name == 'sha1':
     algo = '0'
@@ -66,23 +67,45 @@ __location__ = os.path.realpath(
 # print(args.hash_name)
 # Hashing algorithm obtained from user 
 hashed = hashlib.new(args.hash_name)
-sock.send(algo)
+sock.send(algo.encode())
+print(algo.encode())
 
 # Send the data in each file
 # Hash the contents of each file
 for file in args.file_names:
-    
-    
+        
     # open file and send data
     with open(os.path.join(__location__, file), 'rb') as f:
+        
+        data = f.read()
+        
+        # data_to_send = b'Foo' * 2000 # we must send bytes
+        print('Length of data to send:', len(data))
+        
+        data = io.BytesIO(data)
+        while True:
+            chunk = data.read(4096)
+            if not chunk:
+                print("waiting for hash of file")
+                # hash = sock.recv(4096)
+                # print(hash)
+                break
+            sock.send(chunk)
+            # print(chunk)
+    sock.send('end'.encode())
+        # print(hash)
+        # print(hash + " " + file)
+# while True:
+# data = sock.recv(32)
+# print(data.decode())
+# if not data: 
+#     break
 
-        data = f.read(4096)
+
+
+
+
+        
     
-        # print('Sending data', data)
-        sock.send(data)
+# sock.close()
 
-    # print("waiting for hash of file")
-    data = sock.recv(4096)
-    print(data + " " + file)
-
-sock.close()

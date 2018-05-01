@@ -30,4 +30,4 @@ Example:
 
 Instructions: 
 1. Run the Server 
-2. Run the Client 
+2. Run the Client

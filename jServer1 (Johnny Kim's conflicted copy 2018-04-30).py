@@ -71,26 +71,15 @@ while True:
         
     complete_file = ''
     while True: 
-        file_chunk = client_sock.recv(4096).decode()
-        if file_chunk == 'end':
-            print('end')
-        # file_chunk = receive_file(client_sock)
+        file_chunk = receive_file(client_sock)
         # print(file_chunk)
         complete_file += file_chunk
         # print(file_chunk)
-
-        
-
         if not file_chunk:
             print(complete_file)
-            # print("x")
             hashed = hash_file(complete_file)
-            # print("x")
             print(hashed)
-            # print("x")
-            # client_sock.sendall(hashed.encode())
-            print(hashed.encode())
-            # client_sock.send(hashed.encode())
+            client_sock.send(hashed.encode())
             break
     
 
