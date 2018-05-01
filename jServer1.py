@@ -83,78 +83,9 @@ while True:
 
         if not file_chunk:
             print(complete_file)
-            # print("x")
             hashed = hash_file(complete_file)
-            # print("x")
-            print(hashed)
-            # print("x")
             # client_sock.sendall(hashed.encode())
             print(hashed.encode())
             # client_sock.send(hashed.encode())
             break
     
-
-    # Receive files from client
-    # received = 'received_from_client.txt'
-    # with open(received, 'wb') as fw:
-
-    #     while True:
-    #         data = connection.recv(1024)
-    #         if not data:
-    #             break
-    #         fw.write(data)
-    #     fw.close()
-    #     sock.close()
-    
-
-
-
-    # # Wait for a connection
-    # # open(received, 'w')
-    # print('waiting for a connection')
-    # connection, client_address = sock.accept()
-
-    
-
-    # received = 'received_from_client.txt'
-    
-    # print('connection from', client_address)    
-        
-    #     # deletes any old data
-
-    #     # Receive the data in 4096 byte chunks and write to temporary file
-    #     with open(received, 'a+') as fw:
-    #         # open(received, 'w')
-    #         string1 = ''
-    #         data = connection.recv(4096).decode()
-    #         print(data)
-    #         # data = connection.recv(4096).decode()
-            
-    #         if data:
-    #             # print('received {!r}'.format(data))
-    #             string1 += data
-    #             # fw.write(data)
-                
-    #             fw.write(string1)
-
-                
-    #     with open('received_from_client.txt', 'rb') as afile:
-    #         buf = afile.read()
-    #         # print("buf: "+buf)
-    #         hasher.update(buf)
-    #         hash = hasher.hexdigest()
-    #         # print("buffer" + buf)
-    #     print(hash)
-    #     # print("test")
-    #     connection.send(hash.encode())
-
-    #     # print("elese")
-    #     break
-        
-        
-
-        
-    # fw.close()
-    # # finally: 
-    # sock.close()
-   

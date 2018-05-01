@@ -92,7 +92,7 @@ for file in args.file_names:
                 break
             sock.send(chunk)
             # print(chunk)
-    sock.send('end'.encode())
+    # sock.send('end'.encode())
         # print(hash)
         # print(hash + " " + file)
 # while True:
