@@ -79,8 +79,6 @@ while True:
         complete_file += file_chunk
         # print(file_chunk)
 
-        
-
         if not file_chunk:
             print(complete_file)
             hashed = hash_file(complete_file)
